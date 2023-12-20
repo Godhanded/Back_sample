@@ -20,7 +20,7 @@ class RegisterSchema(BaseModel):
 
     @validator("wallet")
     def valid_wallet_hex(cls, v):
-        if not ("0x" in v[:2]):
+        if "0x" not in v[:2]:
             raise ValueError("Invalid wallet Address")
         return v
 
