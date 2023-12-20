@@ -31,9 +31,7 @@ def resource_not_found(err):
 
 @error.app_errorhandler(ValidationError)
 def input_validation_error(e):
-    msg = []
-    for err in e.errors():
-        msg.append({"field": err["loc"][0], "error": err["msg"]})
+    msg = [{"field": err["loc"][0], "error": err["msg"]} for err in e.errors()]
     return (
         jsonify({"error": "Bad Request", "message": msg, "status": False}),
         400,

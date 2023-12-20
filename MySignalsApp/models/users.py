@@ -65,7 +65,7 @@ class User(BaseModel):
             "roles": self.roles,
             "is_active": self.is_active,
             "wallet": self.wallet,
-            "has_api_keys": True if self.api_key and self.api_secret else False,
+            "has_api_keys": bool(self.api_key and self.api_secret),
             "date_created": self.date_created,
         }
 

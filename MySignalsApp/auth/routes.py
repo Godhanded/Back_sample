@@ -157,12 +157,10 @@ def login_user():
                         "id": user.id,
                         "user_name": user.user_name,
                         "is_active": user.is_active,
-                        "has_api_keys": True
-                        if user.api_key and user.api_secret
-                        else False,
+                        "has_api_keys": bool(user.api_key and user.api_secret),
                         "permission": user.roles.value,
                         "status": True,
-                    },
+                    }
                 ),
                 200,
             )
@@ -174,10 +172,10 @@ def login_user():
                     "id": user.id,
                     "user_name": user.user_name,
                     "is_active": user.is_active,
-                    "has_api_keys": True if user.api_key and user.api_secret else False,
+                    "has_api_keys": bool(user.api_key and user.api_secret),
                     "permission": user.roles.value,
                     "status": True,
-                },
+                }
             ),
             200,
         )
@@ -201,8 +199,7 @@ def reset_request():
     data = request.get_json()
     data = ValidEmailSchema(**data)
     try:
-        user = query_one_filtered(User, email=data.email)
-        if user:
+        if user := query_one_filtered(User, email=data.email):
             send_email(user, "auth.reset_password")
 
             return (
@@ -243,8 +240,7 @@ def reset_password(token):
     data = request.get_json()
     data = ResetPasswordSchema(token=token, **data)
     try:
-        user = verify_reset_token(User, data.token)
-        if user:
+        if user := verify_reset_token(User, data.token):
             user.password = bcrypt.generate_password_hash(data.password).decode("utf-8")
             user.update()
             session.pop("user", None)
@@ -308,7 +304,7 @@ def see_sess():
                 "id": user.id,
                 "is_active": user.is_active,
                 "roles": user.roles.value,
-                "has_api_keys": True if user.api_key and user.api_secret else False,
+                "has_api_keys": bool(user.api_key and user.api_secret),
                 "created_on": user.date_created,
                 "status": True,
             }
@@ -367,7 +363,7 @@ def update_keys():
                 "message": "success",
                 "user_name": user.user_name,
                 "is_active": user.is_active,
-                "has_api_keys": True if user.api_key and user.api_secret else False,
+                "has_api_keys": bool(user.api_key and user.api_secret),
                 "status": True,
             }
         )
