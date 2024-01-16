@@ -439,8 +439,28 @@ def get_notifications():
 
 @auth.route("/notifications/count")
 def get_unread_notifications_count():
-    user = session.get("user")
-    if not user:
+    if user := session.get("user"):
+        return (
+            jsonify(
+                {
+                    "message": "success",
+                    "status": True,
+                    "unread_notifications": user.get_unread_notifications_count(),
+                }
+            )
+            if (user := query_one_filtered(User, id=user.get("id")))
+            else (
+                jsonify(
+                    {
+                        "error": "Resource not found",
+                        "message": "User does not exist",
+                        "status": False,
+                    }
+                ),
+                404,
+            )
+        )
+    else:
         return (
             jsonify(
                 {
@@ -451,22 +471,3 @@ def get_unread_notifications_count():
             ),
             401,
         )
-    user = query_one_filtered(User, id=user.get("id"))
-    if not user:
-        return (
-            jsonify(
-                {
-                    "error": "Resource not found",
-                    "message": "User does not exist",
-                    "status": False,
-                }
-            ),
-            404,
-        )
-    return jsonify(
-        {
-            "message": "success",
-            "status": True,
-            "unread_notifications": user.get_unread_notifications_count(),
-        }
-    )
