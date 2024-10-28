@@ -1,5 +1,5 @@
 {
-  "address": "0x289F0529FBb2eF4e80479079C93F94723CC51780",
+  "address": "0xEff4F4b1a21ffAC6C81Aa1bF8F5d39A35268a356",
   "abi": [
     {
       "inputs": [
@@ -950,6 +950,13 @@
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "startPreSale",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
